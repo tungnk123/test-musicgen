@@ -4,7 +4,8 @@ import threading
 from gradio_client import Client
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.editor import *
-from pydub import AudioSegment
+# from pydub import AudioSegment
+# pip install moviepy
 
 server_list = [
     "https://facebook-musicgen.hf.space/",
@@ -100,10 +101,14 @@ if __name__ == "__main__":
         7: "surprise",
     }
 
-    while True:
-        for i in range(1, 8):
-            emotion = map[i]
+while True:
+    for i in range(1, 8):
+        emotion = map[i]
+        try:
             process_server(server_list[0], emotion, stt)
+        except Exception as e:
+            print(f"Có lỗi xảy ra: {e}")
+            continue
 
 
 
