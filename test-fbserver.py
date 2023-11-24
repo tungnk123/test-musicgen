@@ -30,6 +30,7 @@ def save_to_server(mp4_link, emotion, stt):
     # Dữ liệu yêu cầu
     data = {
         "Emotion": emotion,
+        "DurationInSeconds": 15
     }
 
     files = {
@@ -52,7 +53,7 @@ def process_server(server_name, emotion, stt):
     # duplicate_music = duplicate(music, emotion)
     save_to_server(music, emotion, stt)
     print(music)
-    stt += 1
+    print(f"count = {stt}")
     print("-------------------------------------------")
 
 
@@ -88,7 +89,7 @@ def crossfade(video1, video2, fade_duration=3.0):
 
 
 if __name__ == "__main__":
-    stt = 1
+
     # emotion = input("Vui lòng chọn loại emotion muốn gen: \n 1. anger, 2. disgust, 3. fear, 4. joy, 5. neutral, 6. sadness, 7. surprise \n")
 
     map = {
@@ -100,15 +101,17 @@ if __name__ == "__main__":
         6: "sadness",
         7: "surprise",
     }
-
-while True:
-    for i in range(1, 8):
-        emotion = map[i]
-        try:
-            process_server(server_list[0], emotion, stt)
-        except Exception as e:
-            print(f"Có lỗi xảy ra: {e}")
-            continue
+    count = 1
+    while True:
+        for i in range(1, 8):
+            emotion = map[i]
+            try:
+                process_server(server_list[0], emotion, count)
+                count += 1
+            except Exception as e:
+                print(f"Có lỗi xảy ra: {e}")
+                print("-------------------------------------------")
+                continue
 
 
 
