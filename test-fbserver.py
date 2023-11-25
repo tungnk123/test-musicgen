@@ -4,12 +4,16 @@ import threading
 from gradio_client import Client
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.editor import *
+import keyboard
+
 # from pydub import AudioSegment
 # pip install moviepy
 
 server_list = [
     "https://facebook-musicgen.hf.space/",
 ]
+
+
 def getMusic(server_name, emotion):
     client = Client(server_name)
     result = client.predict(
@@ -18,7 +22,7 @@ def getMusic(server_name, emotion):
         # str (filepath or URL to file) in 'File' Audio component
         fn_index=0
     )
-    return result[0] # chỉ lấy mp4 thôi ko lấy wav
+    return result[0]  # chỉ lấy mp4 thôi ko lấy wav
 
 
 def save_to_server(mp4_link, emotion, stt):
@@ -57,7 +61,6 @@ def process_server(server_name, emotion, stt):
     print("-------------------------------------------")
 
 
-
 def duplicate(input_video_path, emotion):
     clip = VideoFileClip(input_video_path)
 
@@ -75,6 +78,7 @@ def duplicate(input_video_path, emotion):
     final_clip.write_videofile(output_path, codec="libx264", audio_codec="aac")
     return output_path
 
+
 def crossfade(video1, video2, fade_duration=3.0):
     clip1 = VideoFileClip(video1)
     clip2 = VideoFileClip(video2)
@@ -86,6 +90,14 @@ def crossfade(video1, video2, fade_duration=3.0):
 
     final_clip = concatenate_videoclips([clip1, clip2])
     return final_clip
+
+
+stop_flag = False
+
+def on_key_event(e):
+    global stop_flag
+    if e.name == 'esc':
+        stop_flag = True
 
 
 if __name__ == "__main__":
@@ -102,7 +114,8 @@ if __name__ == "__main__":
         7: "surprise",
     }
     count = 1
-    while True:
+    keyboard.hook(on_key_event)
+    while not stop_flag:
         for i in range(1, 8):
             emotion = map[i]
             try:
@@ -112,6 +125,3 @@ if __name__ == "__main__":
                 print(f"Có lỗi xảy ra: {e}")
                 print("-------------------------------------------")
                 continue
-
-
-
